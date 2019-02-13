@@ -1,0 +1,46 @@
+{
+  "name": "@sugo/wkhtmltopdf",
+  "version": "0.3.4",
+  "description": "A wrapper for the wkhtmltopdf HTML to PDF converter",
+  "author": {
+    "name": "Francisco Javier Sucre González",
+    "email": "franciscojsucreg@gmail.com",
+    "url": "https://github.com/franciscosucre"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/franciscosucre/sugo-wkhtmltopdf.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha -r ts-node/register src/test/*.test.ts",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "bugs": "http://github.com/franciscosucre/sugo-wkhtmltopdf/issues",
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.21",
+    "@types/supertest": "^2.0.7",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "prettier": "^1.16.4",
+    "supertest": "^3.4.2",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.17.0",
+    "typescript": "^3.3.1"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ]
+}
