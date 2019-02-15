@@ -37,7 +37,7 @@ export const wkhtmltopdf = (input: string, options: string[] = []) =>
       const auxBuffer: Buffer = Buffer.from(data, 'utf8');
       buffer = Buffer.concat([buffer, auxBuffer]);
     });
-    child.stderr.on('data', function(data) {
+    child.stderr.on('data', data => {
       const auxBuffer: Buffer = Buffer.from(data, 'utf8');
       stderrBuffer = Buffer.concat([stderrBuffer, auxBuffer]);
     });
