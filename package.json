@@ -1,6 +1,6 @@
 {
   "name": "@sugo/wkhtmltopdf",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A wrapper for the wkhtmltopdf HTML to PDF converter",
   "author": {
     "name": "Francisco Javier Sucre González",
