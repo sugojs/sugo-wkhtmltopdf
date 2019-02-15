@@ -9,19 +9,16 @@ const quote = (val: string) => {
   return val;
 };
 
-export const wkhtmltopdf = (input: string, options: string[] = []) => {
-  return new Promise<Buffer>((resolve, reject) => {
+export const wkhtmltopdf = (input: string, options: string[] = []) =>
+  new Promise<Buffer>((resolve, reject) => {
     const isUrl = /^(https?|file):\/\//.test(input);
-    const childArgs = options.concat([isUrl ? quote(input) : '-', '-']);
+    const childArgs = [wkhtmltopdf.command].concat(options, [isUrl ? quote(input) : '-', '-']);
     let child: ChildProcess;
     if (process.platform === 'win32') {
-      child = spawn(wkhtmltopdf.command, childArgs);
+      child = spawn(wkhtmltopdf.command, childArgs.slice(1));
     } else if (process.platform === 'darwin') {
       child = spawn('/bin/sh', ['-c', childArgs.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
     } else {
-      // this nasty business prevents piping problems on linux
-      // The return code should be that of wkhtmltopdf and not of cat
-      // http://stackoverflow.com/a/18295541/1705056
       child = spawn(wkhtmltopdf.shell, ['-c', childArgs.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
     }
     child.on('exit', (code: number) => {
@@ -34,17 +31,23 @@ export const wkhtmltopdf = (input: string, options: string[] = []) => {
       child.stdin.on('error', (err: Error) => reject(err));
       child.stdin.end(input);
     }
-    const stream = child.stdout;
     let buffer: Buffer = Buffer.from('');
-    stream.on('data', (data: string) => {
+    let stderrBuffer: Buffer = Buffer.from('');
+    child.stdout.on('data', (data: string) => {
       const auxBuffer: Buffer = Buffer.from(data, 'utf8');
       buffer = Buffer.concat([buffer, auxBuffer]);
     });
-    stream.on('end', () => resolve(buffer));
-    stream.on('finish', () => resolve(buffer));
-    stream.on('error', (err: Error) => reject(err));
+    child.stderr.on('data', function(data) {
+      const auxBuffer: Buffer = Buffer.from(data, 'utf8');
+      stderrBuffer = Buffer.concat([stderrBuffer, auxBuffer]);
+    });
+    // child.stderr.on('end', () => {
+    //   console.log(stderrBuffer.toString());
+    // });
+    child.stdout.on('end', () => resolve(buffer));
+    child.stdout.on('finish', () => resolve(buffer));
+    child.stdout.on('error', (err: Error) => reject(err));
   });
-};
 
 wkhtmltopdf.command = 'wkhtmltopdf';
 wkhtmltopdf.shell = '/bin/bash';
