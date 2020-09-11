@@ -1,4 +1,5 @@
 import { ChildProcess, spawn } from 'child_process';
+import * as shellescape from 'shell-escape';
 
 const quote = (val: string) => {
   // escape and quote the value if it is a string and this isn't windows
@@ -17,9 +18,9 @@ export const wkhtmltopdf = (input: string, options: string[] = []) =>
     if (process.platform === 'win32') {
       child = spawn(wkhtmltopdf.command, childArgs.slice(1));
     } else if (process.platform === 'darwin') {
-      child = spawn('/bin/sh', ['-c', childArgs.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
+      child = spawn('/bin/sh', ['-c', shellescape(childArgs) + ' | cat ; exit ${PIPESTATUS[0]}']);
     } else {
-      child = spawn(wkhtmltopdf.shell, ['-c', childArgs.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
+      child = spawn(wkhtmltopdf.shell, ['-c', shellescape(childArgs) + ' | cat ; exit ${PIPESTATUS[0]}']);
     }
     child.on('exit', (code: number) => {
       if (code !== 0) {
