@@ -13,7 +13,7 @@ const quote = (val: string) => {
 export const wkhtmltopdf = (input: string, options: string[] = []) =>
   new Promise<Buffer>((resolve, reject) => {
     const isUrl = /^(https?|file):\/\//.test(input);
-    const childArgs = [wkhtmltopdf.command].concat(options, [isUrl ? quote(input) : '-', '-']);
+    const childArgs = [wkhtmltopdf.command].concat(options, [isUrl ? input : '-', '-']);
     let child: ChildProcess;
     if (process.platform === 'win32') {
       child = spawn(wkhtmltopdf.command, childArgs.slice(1));
