@@ -7,7 +7,10 @@
     "email": "franciscojsucreg@gmail.com",
     "url": "https://github.com/franciscosucre"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/shell-escape": "^0.2.0",
+    "shell-escape": "^0.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/franciscosucre/sugo-wkhtmltopdf.git"
